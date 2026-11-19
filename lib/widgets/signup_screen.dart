@@ -1,8 +1,16 @@
 
 import 'package:flutter/material.dart';
+import 'validators.dart';
 
-class SignupScreen extends StatelessWidget {
+class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
+
+  @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
+  final _formKey = GlobalKey<FormState>();
 
   void _showNotImplemented(BuildContext context) {
     showDialog(
@@ -22,6 +30,13 @@ class SignupScreen extends StatelessWidget {
     );
   }
 
+  void _submit() {
+    // validate() runs every field's validator and shows the error messages.
+    if (_formKey.currentState!.validate()) {
+      _showNotImplemented(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,70 +47,77 @@ class SignupScreen extends StatelessWidget {
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.person_add_alt_1,
-                size: 90,
-                color: Colors.indigo,
-              ),
-              const SizedBox(height: 20),
-
-              const Text(
-                'Створення акаунта',
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
+          child: Form(
+            key: _formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.person_add_alt_1,
+                  size: 90,
+                  color: Colors.indigo,
                 ),
-              ),
-              const SizedBox(height: 30),
+                const SizedBox(height: 20),
 
-              const TextField(
-                decoration: InputDecoration(
-                  labelText: 'Ім’я користувача',
-                  hintText: 'Введіть своє ім’я',
-                  prefixIcon: Icon(Icons.badge),
+                const Text(
+                  'Створення акаунта',
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 30),
 
-              const TextField(
-                decoration: InputDecoration(
-                  labelText: 'Логін',
-                  hintText: 'Придумайте логін',
-                  prefixIcon: Icon(Icons.person),
+                TextFormField(
+                  validator: Validators.required,
+                  decoration: const InputDecoration(
+                    labelText: 'Ім’я користувача',
+                    hintText: 'Введіть своє ім’я',
+                    prefixIcon: Icon(Icons.badge),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-              const TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Пароль',
-                  hintText: 'Придумайте пароль',
-                  prefixIcon: Icon(Icons.lock),
+                TextFormField(
+                  validator: Validators.required,
+                  decoration: const InputDecoration(
+                    labelText: 'Логін',
+                    hintText: 'Придумайте логін',
+                    prefixIcon: Icon(Icons.person),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 24),
+                const SizedBox(height: 16),
 
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => _showNotImplemented(context),
-                  child: const Text('Зареєструватись'),
+                TextFormField(
+                  obscureText: true,
+                  validator: Validators.password,
+                  decoration: const InputDecoration(
+                    labelText: 'Пароль',
+                    hintText: 'Придумайте пароль',
+                    prefixIcon: Icon(Icons.lock),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
+                const SizedBox(height: 24),
 
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('Повернутись до авторизації'),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _submit,
+                    child: const Text('Зареєструватись'),
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 8),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Повернутись до авторизації'),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

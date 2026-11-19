@@ -2,9 +2,17 @@
 import 'package:flutter/material.dart';
 import 'signup_screen.dart';
 import 'reset_screen.dart';
+import 'validators.dart';
 
-class SigninScreen extends StatelessWidget {
+class SigninScreen extends StatefulWidget {
   const SigninScreen({super.key});
+
+  @override
+  State<SigninScreen> createState() => _SigninScreenState();
+}
+
+class _SigninScreenState extends State<SigninScreen> {
+  final _formKey = GlobalKey<FormState>();
 
   void _showNotImplemented(BuildContext context) {
     showDialog(
@@ -24,6 +32,13 @@ class SigninScreen extends StatelessWidget {
     );
   }
 
+  void _submit() {
+    // validate() runs every field's validator and shows the error messages.
+    if (_formKey.currentState!.validate()) {
+      _showNotImplemented(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,86 +49,92 @@ class SigninScreen extends StatelessWidget {
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.account_circle,
-                size: 100,
-                color: Colors.indigo,
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Вітаємо!',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
+          child: Form(
+            key: _formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.account_circle,
+                  size: 100,
+                  color: Colors.indigo,
                 ),
-              ),
-              const SizedBox(height: 8),
-              const Text('Увійдіть у свій обліковий запис'),
-              const SizedBox(height: 30),
-
-              const TextField(
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  labelText: 'Логін',
-                  hintText: 'Введіть логін',
-                  prefixIcon: Icon(Icons.person),
+                const SizedBox(height: 20),
+                const Text(
+                  'Вітаємо!',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 8),
+                const Text('Увійдіть у свій обліковий запис'),
+                const SizedBox(height: 30),
 
-              const TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Пароль',
-                  hintText: 'Введіть пароль',
-                  prefixIcon: Icon(Icons.lock),
+                TextFormField(
+                  keyboardType: TextInputType.text,
+                  validator: Validators.required,
+                  decoration: const InputDecoration(
+                    labelText: 'Логін',
+                    hintText: 'Введіть логін',
+                    prefixIcon: Icon(Icons.person),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 24),
+                const SizedBox(height: 16),
 
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => _showNotImplemented(context),
-                  child: const Text('Авторизуватись'),
+                TextFormField(
+                  obscureText: true,
+                  validator: Validators.password,
+                  decoration: const InputDecoration(
+                    labelText: 'Пароль',
+                    hintText: 'Введіть пароль',
+                    prefixIcon: Icon(Icons.lock),
+                  ),
                 ),
-              ),
+                const SizedBox(height: 24),
 
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ResetScreen(),
-                    ),
-                  );
-                },
-                child: const Text('Забули пароль?'),
-              ),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _submit,
+                    child: const Text('Авторизуватись'),
+                  ),
+                ),
 
-              const SizedBox(height: 8),
-
-              const Text('Ще не маєте облікового запису?'),
-              const SizedBox(height: 8),
-
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
+                TextButton(
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const SignupScreen(),
+                        builder: (context) => const ResetScreen(),
                       ),
                     );
                   },
-                  child: const Text('Зареєструватись'),
+                  child: const Text('Забули пароль?'),
                 ),
-              ),
-            ],
+
+                const SizedBox(height: 8),
+
+                const Text('Ще не маєте облікового запису?'),
+                const SizedBox(height: 8),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SignupScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text('Зареєструватись'),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
